@@ -14,7 +14,7 @@ describe("Integration | Server Config", () => {
         contact: ActiveModelSerializer,
       },
     });
-    server.timing = 0;
+    server.timing = 50;
     server.logging = false;
   });
 
@@ -195,6 +195,9 @@ describe("Integration | Server Config", () => {
 
   test("redefining options using the config method works", async () => {
     expect.assertions(5);
+
+    server.urlPrefix = "http://example.net:3000";
+    server.namespace = "other_api";
 
     let contacts = [
       { id: "1", name: "Link" },
