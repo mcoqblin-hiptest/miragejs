@@ -102,8 +102,33 @@ describe("Unit | createServer", function () {
 });
 
 describe("Unit | Server #loadConfig", function () {
-  test("forces timing to 0 in test environment", () => {
+  test("forces the timing to false in test environment if async is not set", () => {
+    expect.assertions(2);
+
     let server = new Server({ environment: "test" });
+
+    server.loadConfig(function () {
+      this.timing = 50;
+    });
+
+    expect(server.timing).toEqual(false);
+
+    server.loadConfig(function () {
+      this.timing = 0;
+    });
+
+    expect(server.timing).toEqual(false);
+
+    server.shutdown();
+  });
+
+  test("forces the timing to 0 in test environment if async is true", () => {
+    expect.assertions(2);
+
+    let server = new Server({
+      environment: "test",
+      async: true,
+    });
 
     server.loadConfig(function () {
       this.timing = 50;
@@ -111,10 +136,41 @@ describe("Unit | Server #loadConfig", function () {
 
     expect(server.timing).toEqual(0);
 
+    server.loadConfig(function () {
+      this.timing = false;
+    });
+
+    expect(server.timing).toEqual(0);
+
     server.shutdown();
   });
 
-  test("doesn't modify user's timing config in other environments", () => {
+  test("forces the timing to false in test environment if async false", () => {
+    expect.assertions(2);
+
+    let server = new Server({
+      environment: "test",
+      async: false,
+    });
+
+    server.loadConfig(function () {
+      this.timing = 50;
+    });
+
+    expect(server.timing).toEqual(false);
+
+    server.loadConfig(function () {
+      this.timing = 0;
+    });
+
+    expect(server.timing).toEqual(false);
+
+    server.shutdown();
+  });
+
+  test("doesn't modify user's timing config in other environments if async is not set", () => {
+    expect.assertions(3);
+
     let server = new Server({ environment: "blah" });
 
     server.loadConfig(function () {
@@ -122,6 +178,70 @@ describe("Unit | Server #loadConfig", function () {
     });
 
     expect(server.timing).toEqual(50);
+
+    server.loadConfig(function () {
+      this.timing = 0;
+    });
+
+    expect(server.timing).toEqual(0);
+
+    server.loadConfig(function () {
+      this.timing = false;
+    });
+
+    expect(server.timing).toEqual(false);
+
+    server.shutdown();
+  });
+
+  test("doesn't modify user's timing config in other environments if async is true", () => {
+    expect.assertions(3);
+
+    let server = new Server({
+      environment: "blah",
+      async: true,
+    });
+
+    server.loadConfig(function () {
+      this.timing = 50;
+    });
+
+    expect(server.timing).toEqual(50);
+
+    server.loadConfig(function () {
+      this.timing = 0;
+    });
+
+    expect(server.timing).toEqual(0);
+
+    server.loadConfig(function () {
+      this.timing = false;
+    });
+
+    expect(server.timing).toEqual(false);
+
+    server.shutdown();
+  });
+
+  test("forces the timing to false in other environments if async is false", () => {
+    expect.assertions(2);
+
+    let server = new Server({
+      environment: "blah",
+      async: false,
+    });
+
+    server.loadConfig(function () {
+      this.timing = 50;
+    });
+
+    expect(server.timing).toEqual(false);
+
+    server.loadConfig(function () {
+      this.timing = 0;
+    });
+
+    expect(server.timing).toEqual(false);
 
     server.shutdown();
   });
