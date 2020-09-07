@@ -40,6 +40,19 @@ describe("Unit | Server", function () {
 
     server.shutdown();
   });
+
+  test("it allows setting the timing to 0 in non-test environments", () => {
+    expect.assertions(1);
+
+    let server = new Server({
+      environment: "development",
+      timing: 0,
+    });
+
+    expect(server.timing).toEqual(0);
+
+    server.shutdown();
+  });
 });
 
 describe("Unit | createServer", function () {
@@ -70,6 +83,19 @@ describe("Unit | createServer", function () {
         expect(true).toBeTruthy();
       },
     });
+
+    server.shutdown();
+  });
+
+  test("it allows setting the timing to 0 in non-test environments", () => {
+    expect.assertions(1);
+
+    let server = createServer({
+      environment: "development",
+      timing: 0,
+    });
+
+    expect(server.timing).toEqual(0);
 
     server.shutdown();
   });
