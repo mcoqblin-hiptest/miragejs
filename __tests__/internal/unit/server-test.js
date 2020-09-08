@@ -101,21 +101,19 @@ describe("Unit | createServer", function () {
   });
 });
 
-describe("Unit | Server #loadConfig", function () {
+describe("Unit | Server #setTiming", function () {
   test("forces the timing to false in test environment if async is not set", () => {
     expect.assertions(2);
 
     let server = new Server({ environment: "test" });
 
-    server.loadConfig(function () {
-      this.timing = 50;
-    });
+    server.timing = 50;
+    server.setTiming();
 
     expect(server.timing).toEqual(false);
 
-    server.loadConfig(function () {
-      this.timing = 0;
-    });
+    server.timing = 0;
+    server.setTiming();
 
     expect(server.timing).toEqual(false);
 
@@ -130,15 +128,13 @@ describe("Unit | Server #loadConfig", function () {
       async: true,
     });
 
-    server.loadConfig(function () {
-      this.timing = 50;
-    });
+    server.timing = 50;
+    server.setTiming();
 
     expect(server.timing).toEqual(0);
 
-    server.loadConfig(function () {
-      this.timing = false;
-    });
+    server.timing = false;
+    server.setTiming();
 
     expect(server.timing).toEqual(0);
 
@@ -153,15 +149,13 @@ describe("Unit | Server #loadConfig", function () {
       async: false,
     });
 
-    server.loadConfig(function () {
-      this.timing = 50;
-    });
+    server.timing = 50;
+    server.setTiming();
 
     expect(server.timing).toEqual(false);
 
-    server.loadConfig(function () {
-      this.timing = 0;
-    });
+    server.timing = 0;
+    server.setTiming();
 
     expect(server.timing).toEqual(false);
 
@@ -173,21 +167,18 @@ describe("Unit | Server #loadConfig", function () {
 
     let server = new Server({ environment: "blah" });
 
-    server.loadConfig(function () {
-      this.timing = 50;
-    });
+    server.timing = 50;
+    server.setTiming();
 
     expect(server.timing).toEqual(50);
 
-    server.loadConfig(function () {
-      this.timing = 0;
-    });
+    server.timing = 0;
+    server.setTiming();
 
     expect(server.timing).toEqual(0);
 
-    server.loadConfig(function () {
-      this.timing = false;
-    });
+    server.timing = false;
+    server.setTiming();
 
     expect(server.timing).toEqual(false);
 
@@ -202,21 +193,18 @@ describe("Unit | Server #loadConfig", function () {
       async: true,
     });
 
-    server.loadConfig(function () {
-      this.timing = 50;
-    });
+    server.timing = 50;
+    server.setTiming();
 
     expect(server.timing).toEqual(50);
 
-    server.loadConfig(function () {
-      this.timing = 0;
-    });
+    server.timing = 0;
+    server.setTiming();
 
     expect(server.timing).toEqual(0);
 
-    server.loadConfig(function () {
-      this.timing = false;
-    });
+    server.timing = false;
+    server.setTiming();
 
     expect(server.timing).toEqual(false);
 
@@ -231,15 +219,13 @@ describe("Unit | Server #loadConfig", function () {
       async: false,
     });
 
-    server.loadConfig(function () {
-      this.timing = 50;
-    });
+    server.timing = 50;
+    server.setTiming();
 
     expect(server.timing).toEqual(false);
 
-    server.loadConfig(function () {
-      this.timing = 0;
-    });
+    server.timing = 0;
+    server.setTiming();
 
     expect(server.timing).toEqual(false);
 

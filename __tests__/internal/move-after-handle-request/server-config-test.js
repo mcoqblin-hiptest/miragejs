@@ -14,7 +14,8 @@ describe("Integration | Server Config", () => {
         contact: ActiveModelSerializer,
       },
     });
-    server.timing = 50;
+    server.timing = 1;
+    server.async = true;
     server.logging = false;
   });
 
@@ -206,7 +207,7 @@ describe("Integration | Server Config", () => {
     server.config({
       namespace: "api",
       urlPrefix: "http://localhost:3000",
-      timing: 1000,
+      timing: 2,
       serializers: {
         post: RestSerializer,
       },
@@ -216,7 +217,7 @@ describe("Integration | Server Config", () => {
     });
     server.get("contacts");
 
-    expect(server.timing).toEqual(1000);
+    expect(server.timing).toEqual(2);
 
     let res = await fetch("http://localhost:3000/api/contacts");
     let data = await res.json();
@@ -227,6 +228,44 @@ describe("Integration | Server Config", () => {
     expect(Object.keys(serializerMap)).toHaveLength(2);
     expect(serializerMap.contact).toEqual(ActiveModelSerializer);
     expect(serializerMap.post).toEqual(RestSerializer);
+  });
+
+  test("the config method does not change options that are not provided", async () => {
+    expect.assertions(4);
+
+    server.urlPrefix = "http://example.net:3000";
+    server.namespace = "other_api";
+
+    let contacts = [
+      { id: "1", name: "Link" },
+      { id: "2", name: "Zelda" },
+    ];
+    server.config({});
+    server.db.loadData({
+      contacts,
+    });
+    server.get("contacts");
+
+    expect(server.timing).toEqual(1);
+
+    let res = await fetch("http://example.net:3000/other_api/contacts");
+    let data = await res.json();
+    expect(data).toEqual({ contacts });
+
+    let serializerMap = server.serializerOrRegistry._serializerMap;
+
+    expect(Object.keys(serializerMap)).toHaveLength(1);
+    expect(serializerMap.contact).toEqual(ActiveModelSerializer);
+  });
+
+  test("the config method updates the timing if async changes", async () => {
+    expect.assertions(1);
+
+    server.config({
+      async: false,
+    });
+
+    expect(server.timing).toEqual(false);
   });
 
   test("changing the environment of the server throws an error", () => {
